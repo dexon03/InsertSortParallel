@@ -30,7 +30,7 @@ class Program
         
         //Iterative
         stopWatch.Start();
-        InsertionSort.Sort(arr2, 0, arrLength - 1);
+        InsertionSort.IterativeSort(arr2);
         stopWatch.Stop();
         Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
         
@@ -56,7 +56,7 @@ class Program
         
         //Iterative
         stopWatch.Start();
-        InsertionSort.Sort(arr2, 0, arrLength - 1);
+        InsertionSort.IterativeSort(arr2);
         stopWatch.Stop();
         Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
         
@@ -83,7 +83,7 @@ class Program
         
         //Iterative
         stopWatch.Start();
-        InsertionSort.Sort(arr2, 0, arrLength - 1);
+        InsertionSort.IterativeSort(arr2);
         stopWatch.Stop();
         Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
         

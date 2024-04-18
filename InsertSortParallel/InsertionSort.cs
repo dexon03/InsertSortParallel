@@ -2,7 +2,11 @@
 
 public class InsertionSort
 {
-    private const int Threshold = 16;
+    private const int Threshold = 50;
+    public static void IterativeSort(int[] array)
+    {
+        IterativeSortInternal(array, 0, array.Length - 1);
+    }
     public static void ParallelSort(int[] array)
     {
         if (IsSorted(array, 0, array.Length - 1))
@@ -16,7 +20,7 @@ public class InsertionSort
         if (right - left + 1 <= Threshold)
         {
             if (!IsSorted(array, left, right))
-                Sort(array, left, right);
+                IterativeSort(array, left, right);
         }
         else
         {
@@ -27,8 +31,24 @@ public class InsertionSort
             Merge(array, left, mid, right);
         }
     }
+    
+    
+    private static void IterativeSortInternal(int[] array, int left, int right)
+        {
+            if (right - left + 1 <= Threshold)
+            {
+                IterativeSort(array, left, right);
+            }
+            else
+            {
+                int mid = (left + right) / 2;
+                IterativeSortInternal(array, left, mid);
+                IterativeSortInternal(array, mid + 1, right);
+                Merge(array, left, mid, right);
+            }
+        }
 
-    public static void Sort(int[] array, int left, int right)
+    private static void IterativeSort(int[] array, int left, int right)
     {
         for (int i = left + 1; i <= right; i++)
         {
