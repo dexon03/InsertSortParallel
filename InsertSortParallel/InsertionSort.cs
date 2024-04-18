@@ -2,12 +2,13 @@
 
 public class InsertionSort
 {
-    private const int Threshold = 50;
-    public static void IterativeSort(int[] array)
+    private static int Threshold = 50;
+    public static void IterativeSort<T>(T[] array) where T : IComparable<T>
     {
         IterativeSortInternal(array, 0, array.Length - 1);
     }
-    public static void ParallelSort(int[] array)
+
+    public static void ParallelSort<T>(T[] array) where T : IComparable<T>
     {
         if (IsSorted(array, 0, array.Length - 1))
             return;
@@ -15,12 +16,12 @@ public class InsertionSort
         ParallelInsertionSortInternal(array, 0, array.Length - 1);
     }
 
-    private static void ParallelInsertionSortInternal(int[] array, int left, int right)
+    private static void ParallelInsertionSortInternal<T>(T[] array, int left, int right) where T : IComparable<T>
     {
         if (right - left + 1 <= Threshold)
         {
             if (!IsSorted(array, left, right))
-                IterativeSort(array, left, right);
+                IterativeSortInternal(array, left, right);
         }
         else
         {
@@ -31,30 +32,29 @@ public class InsertionSort
             Merge(array, left, mid, right);
         }
     }
-    
-    
-    private static void IterativeSortInternal(int[] array, int left, int right)
-        {
-            if (right - left + 1 <= Threshold)
-            {
-                IterativeSort(array, left, right);
-            }
-            else
-            {
-                int mid = (left + right) / 2;
-                IterativeSortInternal(array, left, mid);
-                IterativeSortInternal(array, mid + 1, right);
-                Merge(array, left, mid, right);
-            }
-        }
 
-    private static void IterativeSort(int[] array, int left, int right)
+    private static void IterativeSortInternal<T>(T[] array, int left, int right) where T : IComparable<T>
+    {
+        if (right - left + 1 <= Threshold)
+        {
+            IterativeSort(array, left, right);
+        }
+        else
+        {
+            int mid = (left + right) / 2;
+            IterativeSortInternal(array, left, mid);
+            IterativeSortInternal(array, mid + 1, right);
+            Merge(array, left, mid, right);
+        }
+    }
+
+    private static void IterativeSort<T>(T[] array, int left, int right) where T : IComparable<T>
     {
         for (int i = left + 1; i <= right; i++)
         {
-            int key = array[i];
+            T key = array[i];
             int j = i - 1;
-            while (j >= left && array[j] > key)
+            while (j >= left && array[j].CompareTo(key) > 0)
             {
                 array[j + 1] = array[j];
                 j--;
@@ -63,23 +63,23 @@ public class InsertionSort
         }
     }
 
-    private static bool IsSorted(int[] array, int left, int right)
+    private static bool IsSorted<T>(T[] array, int left, int right) where T : IComparable<T>
     {
         for (int i = left + 1; i <= right; i++)
         {
-            if (array[i - 1] > array[i])
+            if (array[i - 1].CompareTo(array[i]) > 0)
                 return false;
         }
         return true;
     }
 
-    private static void Merge(int[] array, int left, int mid, int right)
+    private static void Merge<T>(T[] array, int left, int mid, int right) where T : IComparable<T>
     {
         if (IsSorted(array, left, right))
             return;
 
-        int[] leftArray = new int[mid - left + 1];
-        int[] rightArray = new int[right - mid];
+        T[] leftArray = new T[mid - left + 1];
+        T[] rightArray = new T[right - mid];
 
         Array.Copy(array, left, leftArray, 0, mid - left + 1);
         Array.Copy(array, mid + 1, rightArray, 0, right - mid);
@@ -88,7 +88,7 @@ public class InsertionSort
 
         while (i < leftArray.Length && j < rightArray.Length)
         {
-            if (leftArray[i] <= rightArray[j])
+            if (leftArray[i].CompareTo(rightArray[j]) <= 0)
             {
                 array[k] = leftArray[i];
                 i++;
