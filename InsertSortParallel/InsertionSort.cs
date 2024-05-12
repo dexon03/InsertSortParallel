@@ -26,9 +26,10 @@ public class InsertionSort
         else
         {
             int mid = (left + right) / 2;
-            Task leftTask = Task.Run(() => ParallelInsertionSortInternal(array, left, mid));
-            Task rightTask = Task.Run(() => ParallelInsertionSortInternal(array, mid + 1, right));
-            Task.WaitAll(leftTask, rightTask);
+            Parallel.Invoke(
+                () => ParallelInsertionSortInternal(array, left, mid),
+                () => ParallelInsertionSortInternal(array, mid + 1, right)
+                );
             Merge(array, left, mid, right);
         }
     }
