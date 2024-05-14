@@ -10,7 +10,68 @@ class Program
         // TestInBestCase();
         // TestInWorstCase();
         // TestInAverageCase();
-        TestForStrings();
+        // TestForStrings();
+        // TestIterativeForStrings();
+        TestParallelForStrings();
+    }
+
+    private static void TestIterativeForStrings()
+    {
+        int[] arrLengths = { 10000, 100000, 1000000, 5000000 };
+
+        foreach (int arrLength in arrLengths)
+        {
+            var arr = new string[arrLength];
+            var generator = new PseudoRandomStringGenerator();
+            for (int i = 0; i < arrLength; i++)
+            {
+                arr[i] = generator.Next();
+            }
+
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            InsertionSort.IterativeSort(arr);
+            stopWatch.Stop();
+
+            Console.WriteLine("Array size: " + arrLength);
+            Console.WriteLine("Time taken for iterative sort: " + stopWatch.ElapsedMilliseconds + "ms");
+            CheckCorrectResult(arr);
+        }
+        
+    }
+    
+    private static void TestParallelForStrings()
+    {
+        int[] arrLengths = { 10000, 100000, 1000000, 5000000 };
+
+        foreach (int arrLength in arrLengths)
+        {
+            Console.WriteLine("Array size: " + arrLength);
+            var arr = new string[arrLength];
+            var arr2 = new string[arrLength];
+            var generator = new PseudoRandomStringGenerator();
+            for (int i = 0; i < arrLength; i++)
+            {
+                arr[i] = generator.Next();
+                arr2[i] = arr[i];
+            }
+            var stopWatch = new Stopwatch();
+            //Parallel
+            stopWatch.Start();
+            InsertionSort.ParallelSort(arr);
+            stopWatch.Stop();
+            Console.WriteLine("Time taken for Parallel: " + stopWatch.ElapsedMilliseconds + "ms");
+        
+            //Iterative
+            stopWatch.Start();
+            InsertionSort.IterativeSort(arr2);
+            stopWatch.Stop();
+            Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
+        
+        
+            CheckCorrectResult(arr, arr2);
+        }
+        
     }
 
     private static void TestForStrings()
@@ -129,7 +190,7 @@ class Program
             return;
         }
         
-        for (int i = 0; i < arrLength; i++)
+        for (int i = 0; i < arr.Length; i++)
         {
             if (arr[i].CompareTo(arr2[i]) != 0)
             {
@@ -143,94 +204,16 @@ class Program
             }
         }
     }
-    //
-    // private const int Threshold = 16;
-    //
-    // public static void ParallelInsertionSort(int[] array)
-    // {
-    //     ParallelInsertionSortInternal(array, 0, array.Length - 1);
-    // }
-    //
-    // private static void ParallelInsertionSortInternal(int[] array, int left, int right)
-    // {
-    //     if (right - left + 1 <= Threshold)
-    //     {
-    //         InsertionSort(array, left, right);
-    //     }
-    //     else
-    //     {
-    //         int mid = (left + right) / 2;
-    //         Task leftTask = Task.Run(() => ParallelInsertionSortInternal(array, left, mid));
-    //         Task rightTask = Task.Run(() => ParallelInsertionSortInternal(array, mid + 1, right));
-    //         Task.WaitAll(leftTask, rightTask);
-    //         Merge(array, left, mid, right);
-    //     }
-    // }
-    //
-    // public static void InsertionSort(int[] array, int left, int right)
-    // {
-    //     for (int i = left + 1; i <= right; i++)
-    //     {
-    //         int key = array[i];
-    //         int j = i - 1;
-    //         while (j >= left && array[j] > key)
-    //         {
-    //             array[j + 1] = array[j];
-    //             j--;
-    //         }
-    //         array[j + 1] = key;
-    //     }
-    // }
-    //
-    // private static void Merge(int[] array, int left, int mid, int right)
-    // {
-    //     int[] leftArray = new int[mid - left + 1];
-    //     int[] rightArray = new int[right - mid];
-    //
-    //     Array.Copy(array, left, leftArray, 0, mid - left + 1);
-    //     Array.Copy(array, mid + 1, rightArray, 0, right - mid);
-    //
-    //     int i = 0;
-    //     int j = 0;
-    //     int k = left;
-    //
-    //     while (i < leftArray.Length && j < rightArray.Length)
-    //     {
-    //         if (leftArray[i] <= rightArray[j])
-    //         {
-    //             array[k] = leftArray[i];
-    //             i++;
-    //         }
-    //         else
-    //         {
-    //             array[k] = rightArray[j];
-    //             j++;
-    //         }
-    //         k++;
-    //     }
-    //
-    //     while (i < leftArray.Length)
-    //     {
-    //         array[k] = leftArray[i];
-    //         i++;
-    //         k++;
-    //     }
-    //
-    //     while (j < rightArray.Length)
-    //     {
-    //         array[k] = rightArray[j];
-    //         j++;
-    //         k++;
-    //     }
-    // }
-    //
-    // private static bool IsSorted(int[] array, int left, int right)
-    // {
-    //     for (int i = left + 1; i <= right; i++)
-    //     {
-    //         if (array[i - 1] > array[i])
-    //             return false;
-    //     }
-    //     return true;
-    // }
+    
+    private static void CheckCorrectResult<T>(T[] arr) where T : IComparable<T>
+    {
+        for (int i = 1; i < arr.Length; i++)
+        {
+            if (arr[i].CompareTo(arr[i - 1]) < 0)
+            {
+                Console.WriteLine("Error: Array is not sorted properly.");
+                break;
+            }
+        }
+    }
 }
