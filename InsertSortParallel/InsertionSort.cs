@@ -76,9 +76,6 @@ public class InsertionSort
 
     private static void Merge<T>(T[] array, int left, int mid, int right) where T : IComparable<T>
     {
-        if (IsSorted(array, left, right))
-            return;
-
         T[] leftArray = new T[mid - left + 1];
         T[] rightArray = new T[right - mid];
 

@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using InsertSortParallel;
 using StringGenerator;
 
 class Program
 {
-    private static int arrLength = 1_000_000;
+    private static int arrLength = 10_000_000;
     static void Main()
     {
         // TestInBestCase();
