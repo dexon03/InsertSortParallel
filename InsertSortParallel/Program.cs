@@ -65,12 +65,12 @@ class Program
         
             //Iterative
             stopWatch.Start();
-            // InsertionSort.IterativeSort(arr2);
+            InsertionSort.IterativeSort(arr2);
             stopWatch.Stop();
             Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
         
         
-            // CheckCorrectResult(arr, arr2);
+            CheckCorrectResult(arr, arr2);
         }
         
     }
