@@ -12,13 +12,14 @@ class Program
         // TestInAverageCase();
         // TestForStrings();
         // TestIterativeForStrings();
-        TestParallelForStrings();
+        // TestParallelForStrings();
+        TestParallelForStringsWithWarmup();
     }
 
     private static void TestIterativeForStrings()
     {
-        int[] arrLengths = { 10000, 100000, 1000000, 5000000 };
-
+        int[] arrLengths = { 10000, 100000, 1000000, 5000000, 10_000_000 };
+        
         foreach (int arrLength in arrLengths)
         {
             var arr = new string[arrLength];
@@ -35,14 +36,14 @@ class Program
 
             Console.WriteLine("Array size: " + arrLength);
             Console.WriteLine("Time taken for iterative sort: " + stopWatch.ElapsedMilliseconds + "ms");
-            CheckCorrectResult(arr);
+            // CheckCorrectResult(arr);
         }
         
     }
     
     private static void TestParallelForStrings()
     {
-        int[] arrLengths = { 10000, 100000, 1000000, 5000000 };
+        int[] arrLengths = { 10000, 100000, 1000000, 5000000, 10_000_000, 100_000_000 };
 
         foreach (int arrLength in arrLengths)
         {
@@ -64,10 +65,62 @@ class Program
         
             //Iterative
             stopWatch.Start();
-            InsertionSort.IterativeSort(arr2);
+            // InsertionSort.IterativeSort(arr2);
             stopWatch.Stop();
             Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
         
+        
+            // CheckCorrectResult(arr, arr2);
+        }
+        
+    }
+    
+    private static void TestParallelForStringsWithWarmup()
+    {
+        int[] arrLengths = { 10_000, 100_000, 1_000_000, 5_000_000, 10_000_000 };
+
+        foreach (int arrLength in arrLengths)
+        {
+            // warmup
+            for (int i = 0; i < 10; i++)
+            {
+                var warmArr = new string[arrLength];
+                var warmArr2 = new string[arrLength];
+                var warmGenerator = new PseudoRandomStringGenerator();
+                for (int j = 0; j < arrLength; j++)
+                {
+                    warmArr[j] = warmGenerator.Next();
+                    warmArr2[j] = warmArr[j];
+                }
+                InsertionSort.IterativeSort(warmArr);
+                InsertionSort.ParallelSort(warmArr2);
+                
+            }
+            Console.WriteLine("Array size: " + arrLength);
+            var arr = new string[arrLength];
+            var arr2 = new string[arrLength];
+            var generator = new PseudoRandomStringGenerator();
+            for (int i = 0; i < arrLength; i++)
+            {
+                arr[i] = generator.Next();
+                arr2[i] = arr[i];
+            }
+            var stopWatch = new Stopwatch();
+            //Parallel
+            stopWatch.Start();
+            InsertionSort.ParallelSort(arr);
+            stopWatch.Stop();
+            var parallelTime = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine("Time taken for Parallel: " + stopWatch.ElapsedMilliseconds + "ms");
+        
+            //Iterative
+            stopWatch.Start();
+            InsertionSort.IterativeSort(arr2);
+            stopWatch.Stop();
+            var iterativeTime = stopWatch.ElapsedMilliseconds;
+            Console.WriteLine("Time taken for iterative: " + stopWatch.ElapsedMilliseconds + "ms");
+            
+            Console.WriteLine("Speedup: " + (double)iterativeTime / parallelTime);
         
             CheckCorrectResult(arr, arr2);
         }
