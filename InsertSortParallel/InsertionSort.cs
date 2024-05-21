@@ -2,7 +2,7 @@
 
 public class InsertionSort
 {
-    private static int Threshold = 50;
+    private static int Threshold = 1000;
     public static void IterativeSort<T>(T[] array) where T : IComparable<T>
     {
         IterativeSortInternal(array, 0, array.Length - 1);
@@ -21,7 +21,7 @@ public class InsertionSort
         if (right - left + 1 <= Threshold)
         {
             if (!IsSorted(array, left, right))
-                IterativeSortInternal(array, left, right);
+                IterativeSort(array, left, right);
         }
         else
         {
